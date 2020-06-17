@@ -28,6 +28,7 @@ class DrinkAdapter(private val dataSet: Array<Drink>, var clickListener: onDrink
 
     //Cria o objeto baseado no formato do xml escolhido
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DrinkViewHolder {
+//        println("ENTROU NO ADAPTER DOS DRINKS ")
         var view : View = LayoutInflater.from(parent.context).inflate(R.layout.drink_lista_2, parent, false)
         return DrinkViewHolder(view)
     }

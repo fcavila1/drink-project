@@ -5,10 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import br.com.fernandoavila.drinkproject.R
-import br.com.fernandoavila.drinkproject.domain.Mensagem
 import br.com.fernandoavila.drinkproject.view.adapter.ChatAdapter
-import br.com.fernandoavila.drinkproject.view.adapter.DrinkAdapter
 import br.com.fernandoavila.drinkproject.viewModel.ChatViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_chat.*
@@ -19,6 +18,8 @@ class ChatActivity : AppCompatActivity() {
     private val chatViewModel: ChatViewModel  by lazy {
         ViewModelProvider(this).get(ChatViewModel::class.java)
     }
+
+    private val adapter = ChatAdapter(this)
 
     private val navegacao = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -49,27 +50,29 @@ class ChatActivity : AppCompatActivity() {
         nav.setOnNavigationItemSelectedListener(navegacao)
 
         sendButton.setOnClickListener { enviarMensagem() }
+        mudancasNaListaDeRespostas()
 
-        observarMudancaLista()
     }
 
-    private fun observarMudancaLista(){
-        val adapter = ChatAdapter(this);
-        rvChat.adapter = adapter
-        chatViewModel.mensagemDialog.observe(this, Observer { resposta -> enviarListaMensagens(resposta) })
+    //Metodo para configurar a apresentacao(No caso esta vertical um abaixo do outro)
+    private fun mudancasNaListaDeRespostas(){
+        rvChat.layoutManager = LinearLayoutManager(this)
+        chatViewModel.mensagemDialog.observe(this, Observer { resposta ->
+            rvChat.adapter = adapter
+            enviarListaMensagens(resposta)
+        })
     }
 
-
+    //Envia as mensagens para a viewModel
     private fun enviarMensagem(){
         val mensagem = inputChat.text.toString()
+        enviarListaMensagens(mensagem);
         inputChat.editableText.clear()
-
-        enviarListaMensagens(Mensagem(mensagem));
-
         chatViewModel.enviarMensagem(mensagem)
     }
 
-    private  fun enviarListaMensagens(msg: Mensagem) {
+    //Envia as mensagens para o array de mensagens do adapter
+    private  fun enviarListaMensagens(msg: String) {
         val adapter = ChatAdapter(this);
         adapter.adicionarMensagemLista(msg)
     }

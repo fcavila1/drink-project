@@ -10,7 +10,7 @@ class ChatInteractor(private val context: Context) {
 
     private val chatRepository = ChatRepository(context, context.getString(R.string.heroku_base_api))
 
-    fun enviarMensagem(mensagem: String, callback: (mensagem: Mensagem?) -> Unit) {
+    fun enviarMensagem(mensagem: String, callback: (mensagem: String?) -> Unit) {
         chatRepository.enviarMensagem(mensagem, callback)
     }
 }
